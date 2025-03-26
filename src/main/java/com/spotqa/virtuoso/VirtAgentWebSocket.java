@@ -7,10 +7,10 @@ import io.quarkus.websockets.next.WebSocket;
 @WebSocket(path = "/virt-agent")
 public class VirtAgentWebSocket {
 
-    private final VirtAgent customerSupportAgent;
+    private final VirtAgent virtAgent;
 
-    public VirtAgentWebSocket(VirtAgent customerSupportAgent) {
-        this.customerSupportAgent = customerSupportAgent;
+    public VirtAgentWebSocket(VirtAgent virtAgent) {
+        this.virtAgent = virtAgent;
     }
 
     @OnOpen
@@ -20,6 +20,6 @@ public class VirtAgentWebSocket {
 
     @OnTextMessage
     public String onTextMessage(String message) {
-        return customerSupportAgent.chat(message);
+        return virtAgent.chat(message);
     }
 }
