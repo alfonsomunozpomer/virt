@@ -1,0 +1,20 @@
+{
+  "name": "quinoa-starter",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --base=/virt",
+    "build": "vite build --base=/virt",
+    "preview": "vite preview --base=/virt"
+  },
+  "dependencies": {
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+      "@vitejs/plugin-vue": "^5.2.1",
+    "vite": "^6.2.1",
+    "vite-plugin-vue-devtools": "^7.7.2"
+
+  }
+}
