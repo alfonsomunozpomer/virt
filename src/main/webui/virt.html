@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <script src="https://cdn.jsdelivr.net/npm/wc-chatbot"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Virt Agent</title>
+  </head>
+  <body>
+    <chat-bot></chat-bot>
+  </body>
+
+  <script>
+      function _stripHtml(html) {
+          const div = document.createElement("div");
+          div.innerHTML = html;
+          return div.textContent || div.innerText || "";
+      }
+
+      const chatBot = document.getElementsByTagName("chat-bot")[0];
+
+      const protocol = (window.location.protocol === 'https:') ? 'wss' : 'ws';
+      const socket = new WebSocket(protocol + '://' + window.location.host + '/virt-agent');
+
+      socket.onmessage = function (event) {
+          chatBot.hideLastLoading();
+          // LLM response
+          let lastMessage;
+          if (chatBot.messages.length > 0) {
+              lastMessage = chatBot.messages[chatBot.messages.length - 1];
+          }
+          if (lastMessage && lastMessage.sender.name === "Bot"  && ! lastMessage.loading) {
+              if (! lastMessage.msg) {
+                  lastMessage.msg = "";
+              }
+              lastMessage.msg += event.data;
+              let bubbles = chatBot.shadowRoot.querySelectorAll("chat-bubble");
+              let bubble = bubbles.item(bubbles.length - 1);
+              if (lastMessage.message) {
+                bubble.innerHTML = _stripHtml(lastMessage.message) + lastMessage.msg;
+              } else {
+                bubble.innerHTML = lastMessage.msg;
+              }
+              chatBot.body.scrollTo({ top: chatBot.body.scrollHeight, behavior: 'smooth' })
+          } else {
+              chatBot.sendMessage(event.data, {
+                  right: false,
+                  sender: {
+                      name: "Bot"
+                  }
+              });
+          }
+      }
+
+      chatBot.addEventListener("sent", function (e) {
+          if (e.detail.message.sender.name !== "Bot") {
+              // User message
+              const msg = _stripHtml(e.detail.message.message);
+              socket.send(msg);
+              chatBot.sendMessage("", {
+                  right: false,
+                  loading: true
+              });
+          }
+      });
+  </script>
+</html>
