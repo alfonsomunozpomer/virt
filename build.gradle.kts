@@ -13,6 +13,7 @@ val quarkusPlatformArtifactId: String by project
 val quarkusPlatformVersion: String by project
 
 dependencies {
+    implementation("io.quarkus:quarkus-websockets-next")
     implementation("io.quarkiverse.quinoa:quarkus-quinoa:2.5.3")
     implementation("io.quarkiverse.langchain4j:quarkus-langchain4j-openai:0.26.0")
     implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
