@@ -5,13 +5,10 @@ import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.rag.DefaultRetrievalAugmentor;
 import dev.langchain4j.rag.RetrievalAugmentor;
-import dev.langchain4j.rag.content.Content;
-import dev.langchain4j.rag.content.injector.ContentInjector;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.Produces;
-import java.util.List;
 
 public class RagRetriever {
   @Produces
@@ -25,15 +22,18 @@ public class RagRetriever {
 
     return DefaultRetrievalAugmentor.builder()
         .contentRetriever(contentRetriever)
-        .contentInjector(new ContentInjector() {
-          @Override
-          public UserMessage inject(List<Content> list, UserMessage userMessage) {
-            StringBuffer prompt = new StringBuffer(userMessage.singleText());
-            prompt.append("\nPlease, only use the following information:\n");
-            list.forEach(content -> prompt.append("- ").append(content.textSegment().text()).append("\n"));
-            return new UserMessage(prompt.toString());
-          }
-        })
+        .contentInjector(
+            (list, userMessage) -> {
+              StringBuffer prompt = new StringBuffer(userMessage.singleText());
+              prompt.append("\nPlease, only use the following information and the path between parenthesis to build the links:\n");
+              list.forEach(
+                  content -> {
+                    var absolutePath = content.textSegment().metadata().getString("absolute_directory_path");
+                    var text = content.textSegment().text();
+                    prompt.append("- ").append(text).append(" (").append(absolutePath).append(")").append("\n");
+                  });
+              return new UserMessage(prompt.toString());
+            })
         .build();
   }
 }
