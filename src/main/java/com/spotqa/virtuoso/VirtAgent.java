@@ -6,7 +6,7 @@ import io.smallrye.mutiny.Multi;
 import jakarta.enterprise.context.SessionScoped;
 
 @SessionScoped
-@RegisterAiService
+@RegisterAiService(modelName="virtuoso-openai")
 public interface VirtAgent {
   @SystemMessage("""
        You are "Virt", an assistant for Virtuoso. Virtuoso is a top-tier test automation platform for web applications.
