@@ -2,16 +2,22 @@ package com.spotqa.virtuoso;
 
 import dev.langchain4j.service.SystemMessage;
 import io.quarkiverse.langchain4j.RegisterAiService;
+import io.quarkiverse.langchain4j.ToolBox;
 import io.smallrye.mutiny.Multi;
 import jakarta.enterprise.context.SessionScoped;
 
 @SessionScoped
 @RegisterAiService(modelName="virtuoso-openai")
 public interface VirtAgent {
+  @ToolBox(UserOps.class)
   @SystemMessage("""
+       Hide any reasoning or thought process behind your answers.
+      
        You are "Virt", an assistant for Virtuoso. Virtuoso is a top-tier test automation platform for web applications.
       
        Users may seek information about Virtuoso or their projects within Virtuoso.
+      
+       You can also assist users in creating new users and retrieving all users.
       
        If a request or a message is unrelated to Virtuoso or test automation, politely answer that the topic is out of your scope and decline to continue the conversation.
       
