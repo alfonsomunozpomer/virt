@@ -5,6 +5,7 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <script src="https://cdn.jsdelivr.net/npm/wc-chatbot"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.1.0/showdown.js"></script>
     <title>Virt Agent</title>
   </head>
   <body>
@@ -17,6 +18,7 @@
           div.innerHTML = html;
           return div.textContent || div.innerText || "";
       }
+      const converter = new showdown.Converter()
 
       const chatBot = document.getElementsByTagName("chat-bot")[0];
 
@@ -38,9 +40,9 @@
               let bubbles = chatBot.shadowRoot.querySelectorAll("chat-bubble");
               let bubble = bubbles.item(bubbles.length - 1);
               if (lastMessage.message) {
-                bubble.innerHTML = _stripHtml(lastMessage.message) + lastMessage.msg;
+                bubble.innerHTML = converter.makeHtml(_stripHtml(lastMessage.message) + lastMessage.msg);
               } else {
-                bubble.innerHTML = lastMessage.msg;
+                bubble.innerHTML = converter.makeHtml(lastMessage.msg);
               }
               chatBot.body.scrollTo({ top: chatBot.body.scrollHeight, behavior: 'smooth' })
           } else {
