@@ -13,7 +13,7 @@ public class UserOps {
 
   @Tool("Create a user")
   @Transactional
-  public void createJourney(String userName, String name, String email) {
+  public void createUser(String userName, String name, String email) {
     var user = new User(
         null,
         userName,
