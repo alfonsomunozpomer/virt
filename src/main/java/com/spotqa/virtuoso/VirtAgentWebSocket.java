@@ -3,6 +3,7 @@ package com.spotqa.virtuoso;
 import io.quarkus.websockets.next.OnOpen;
 import io.quarkus.websockets.next.OnTextMessage;
 import io.quarkus.websockets.next.WebSocket;
+import io.smallrye.mutiny.Multi;
 
 @WebSocket(path = "/virt-agent")
 public class VirtAgentWebSocket {
@@ -19,7 +20,7 @@ public class VirtAgentWebSocket {
     }
 
     @OnTextMessage
-    public String onTextMessage(String message) {
+    public Multi<String> onTextMessage(String message) {
         return virtAgent.chat(message);
     }
 }
